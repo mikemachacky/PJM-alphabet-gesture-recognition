@@ -16,6 +16,7 @@ class Controller:
         self.view = view
         self.sequence = []
         self.recognized_text = ''
+        self.recognized_pred = ''
         self.last_prediction_time = 0.0
 
         # połączenia sygnałów widoku
@@ -54,10 +55,13 @@ class Controller:
             if len(self.sequence) == SEQ_LENGTH:
                 try:
                     label, prob = self.model.predict(self.sequence)
+                    self.recognized_pred = f"{label}: {prob*100:.2f}%"
+
                 except Exception as e:
                     # jeśli model wyrzuci błąd, nie przerywamy aplikacji
                     print('Prediction error:', e)
                     label, prob = None, 0.0
+
                 if label is not None and prob > THRESHOLD and cooldown_remaining == 0:
                     self.recognized_text += label
                     self.last_prediction_time = current_time
@@ -66,12 +70,13 @@ class Controller:
 
         else:
             self.sequence = []
-
+            self.recognized_pred = ''
         # Aktualizacja widoku
         progress = int((1 - cooldown_remaining / COOLDOWN_SECONDS) * 100)
         self.view.set_progress(progress, f'Cooldown: {cooldown_remaining:.1f}s')
-        self.view.update_video(frame)
+        self.view.update_video(frame, overlay_text=self.recognized_pred)
         self.view.set_text(self.recognized_text)
+
 
     def stop(self):
         self.timer.stop()

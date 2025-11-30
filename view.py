@@ -58,9 +58,16 @@ class GestureView(QWidget):
         else:
             super().keyPressEvent(event)
 
-    def update_video(self, frame):
+    def update_video(self, frame, overlay_text:str = None):
         # Oczekuje BGR (OpenCV) frame
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        if overlay_text:
+            cv2.putText(
+                frame_rgb, overlay_text, (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2, cv2.LINE_AA
+            )
+
         h, w, ch = frame_rgb.shape
         bytes_per_line = ch * w
         qimg = QImage(frame_rgb.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
