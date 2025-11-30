@@ -1,0 +1,10 @@
+PyQt6==6.10.0
+PyQt-Qt6==6.10
+pyqt6-sip==13.10.2
+qtwidgets==1.1
+tensorflow==2.18.0
+numpy==1.26.4
+mediapipe==0.10.21
+pyinstaller==6.16.0
+opencv-python==4.12.0.88
+
